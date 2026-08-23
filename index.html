@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rakesh Vijayakrishnan — Full-Stack Embedded Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0e13;
+    --bg-elev: #0f1620;
+    --panel: #121a24;
+    --panel-2: #0d131b;
+    --line: #1d2a37;
+    --line-bright: #2c3f52;
+    --amber: #ffb32b;
+    --amber-dim: rgba(255,179,43,0.13);
+    --amber-line: rgba(255,179,43,0.35);
+    --teal: #45d6c4;
+    --teal-dim: rgba(69,214,196,0.12);
+    --teal-line: rgba(69,214,196,0.35);
+    --danger: #ff5c5c;
+    --danger-dim: rgba(255,92,92,0.12);
+    --text: #eaf0f5;
+    --text-dim: #8697a8;
+    --text-faint: #4c5a6a;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--amber); color: #0a0e13; }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* Ambient grid background across whole page */
+  .grid-field {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.35;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+    pointer-events: none;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px;
+    background: rgba(10,14,19,0.7);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .nav.scrolled { border-bottom-color: var(--line); background: rgba(10,14,19,0.92); }
+
+  .nav-mark {
+    font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-mark .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 8px var(--teal); animation: blink 2.4s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  .nav-links { display: flex; gap: 6px; align-items: center; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 12px; color: var(--text-dim);
+    padding: 8px 14px; border-radius: 6px; transition: all 0.2s; letter-spacing: 0.03em;
+  }
+  .nav-links a:hover { color: var(--amber); background: var(--amber-dim); }
+  .nav-links .cta {
+    color: var(--bg); background: var(--teal); font-weight: 600; padding: 8px 16px; border-radius: 6px;
+  }
+  .nav-links .cta:hover { background: var(--amber); color: var(--bg); }
+  .nav-toggle { display: none; }
+
+  @media (max-width: 760px) {
+    .nav-links { position: fixed; top: 64px; left: 0; right: 0; flex-direction: column; align-items: stretch;
+      background: var(--panel-2); border-bottom: 1px solid var(--line); padding: 12px; gap: 2px;
+      transform: translateY(-130%); transition: transform 0.3s; }
+    .nav-links.open { transform: translateY(0); }
+    .nav-links a { text-align: center; padding: 12px; }
+    .nav-toggle { display: block; background: none; border: 1px solid var(--line); color: var(--text); font-family: var(--mono); font-size: 11px; padding: 7px 12px; border-radius: 6px; cursor: pointer; }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 140px 32px 80px;
+    overflow: hidden;
+  }
+
+  .hero-canvas-wrap { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  #armCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.92; }
+
+  .hero-content { position: relative; z-index: 2; max-width: 760px; }
+
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 12px; color: var(--teal); letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 22px; display: inline-flex; align-items: center; gap: 10px;
+    padding: 6px 14px; border: 1px solid var(--teal-line); border-radius: 20px; background: var(--teal-dim);
+    opacity: 0; animation: riseIn 0.7s 0.1s ease forwards;
+  }
+
+  .hero h1 {
+    font-family: var(--display); font-weight: 700; letter-spacing: -0.01em;
+    font-size: clamp(2.4rem, 6.5vw, 4.6rem); line-height: 1.05; color: var(--text);
+    opacity: 0; animation: riseIn 0.8s 0.25s ease forwards;
+  }
+  .hero h1 span { color: var(--amber); }
+
+  .hero-role {
+    font-family: var(--mono); font-size: clamp(13px, 1.6vw, 16px); color: var(--text-dim);
+    margin-top: 18px; letter-spacing: 0.02em;
+    opacity: 0; animation: riseIn 0.8s 0.4s ease forwards;
+  }
+  .hero-role .sep { color: var(--text-faint); margin: 0 6px; }
+  .hero-role .hl { color: var(--teal); }
+
+  .hero-desc {
+    font-size: 15.5px; color: var(--text-dim); max-width: 560px; margin: 24px auto 0; line-height: 1.75;
+    opacity: 0; animation: riseIn 0.8s 0.55s ease forwards;
+  }
+
+  .hero-cta { display: flex; gap: 14px; justify-content: center; margin-top: 36px; flex-wrap: wrap;
+    opacity: 0; animation: riseIn 0.8s 0.7s ease forwards; }
+
+  .btn {
+    font-family: var(--mono); font-size: 13px; padding: 13px 24px; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary { background: var(--amber); color: #1a1305; font-weight: 600; border: 1px solid var(--amber); }
+  .btn-primary:hover { background: #ffc866; transform: translateY(-2px); box-shadow: 0 8px 24px -8px rgba(255,179,43,0.5); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line-bright); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+
+  @keyframes riseIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .scroll-cue {
+    position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 10px; color: var(--text-faint); letter-spacing: 0.15em;
+    display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2;
+  }
+  .scroll-cue .line { width: 1px; height: 28px; background: linear-gradient(var(--teal), transparent); animation: scrollLine 1.8s ease-in-out infinite; }
+  @keyframes scrollLine { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+  /* ── SECTION SHELL ── */
+  section.block { position: relative; z-index: 1; padding: 110px 0; }
+  .section-head { margin-bottom: 54px; max-width: 640px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; color: var(--teal); letter-spacing: 0.16em; text-transform: uppercase;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--teal); }
+  .section-title { font-family: var(--display); font-weight: 600; font-size: clamp(1.7rem, 3.4vw, 2.5rem); color: var(--text); margin-bottom: 14px; letter-spacing: -0.01em; }
+  .section-sub { font-size: 14.5px; color: var(--text-dim); line-height: 1.75; }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  /* ── ABOUT ── */
+  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: start; }
+  @media (max-width: 820px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-text p { font-size: 15px; color: #c4d0da; line-height: 1.85; margin-bottom: 16px; }
+  .about-text strong { color: var(--text); font-weight: 500; }
+
+  .status-panel {
+    border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 22px;
+    font-family: var(--mono);
+  }
+  .status-panel .ph { font-size: 10.5px; color: var(--text-faint); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--line); }
+  .status-row { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; font-size: 12.5px; border-bottom: 1px solid var(--line); }
+  .status-row:last-child { border-bottom: none; }
+  .status-row .k { color: var(--text-dim); }
+  .status-row .v { color: var(--text); font-weight: 500; }
+  .status-row .v.amber { color: var(--amber); }
+  .status-row .v.teal { color: var(--teal); }
+
+  /* ── PROJECTS ── */
+  .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  @media (max-width: 820px) { .proj-grid { grid-template-columns: 1fr; } }
+
+  .proj-card {
+    position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 26px 26px 24px; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+  }
+  .proj-card::before {
+    content: ''; position: absolute; inset: 0; border-radius: 12px; padding: 1px;
+    background: linear-gradient(135deg, var(--teal-line), transparent 40%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .proj-card:hover { transform: translateY(-4px); border-color: var(--line-bright); box-shadow: 0 20px 40px -20px rgba(0,0,0,0.6); }
+  .proj-card:hover::before { opacity: 1; }
+
+  .corner { position: absolute; width: 12px; height: 12px; border-color: var(--text-faint); opacity: 0.6; transition: border-color 0.3s, opacity 0.3s; }
+  .proj-card:hover .corner { border-color: var(--amber); opacity: 1; }
+  .corner.tl { top: 10px; left: 10px; border-top: 1.5px solid; border-left: 1.5px solid; }
+  .corner.br { bottom: 10px; right: 10px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+
+  .proj-tag {
+    display: inline-block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em;
+    color: var(--amber); background: var(--amber-dim); border: 1px solid var(--amber-line);
+    padding: 3px 10px; border-radius: 12px; margin-bottom: 14px; text-transform: uppercase;
+  }
+  .proj-card h3 { font-family: var(--display); font-size: 1.2rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+  .proj-card p { font-size: 13.5px; color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; }
+  .proj-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-family: var(--mono); font-size: 10.5px; color: var(--text-dim); background: var(--bg-elev); border: 1px solid var(--line); padding: 4px 9px; border-radius: 5px; }
+
+  /* ── SKILLS ── */
+  .sub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 820px) { .sub-grid { grid-template-columns: 1fr; } }
+  .sub-card { border: 1px solid var(--line); border-radius: 10px; padding: 22px; background: var(--panel-2); transition: border-color .3s; }
+  .sub-card:hover { border-color: var(--teal-line); }
+  .sub-card .sub-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .sub-card .sub-name { font-family: var(--display); font-weight: 600; font-size: 15px; color: var(--text); }
+  .sub-card .sub-idx { font-family: var(--mono); font-size: 10.5px; color: var(--text-faint); }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 7px; }
+  .skill-pill { font-family: var(--mono); font-size: 11.5px; color: var(--text-dim); border: 1px solid var(--line); padding: 6px 11px; border-radius: 6px; transition: all 0.2s; cursor: default; }
+  .skill-pill:hover { color: var(--amber); border-color: var(--amber-line); background: var(--amber-dim); transform: translateY(-1px); }
+
+  /* ── EXPERIENCE (route) ── */
+  .route { position: relative; padding-left: 34px; }
+  .route::before { content: ''; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 2px;
+    background: repeating-linear-gradient(var(--line-bright) 0 6px, transparent 6px 12px); }
+  .stop { position: relative; padding-bottom: 42px; }
+  .stop:last-child { padding-bottom: 0; }
+  .stop-node { position: absolute; left: -34px; top: 2px; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--teal); box-shadow: 0 0 0 4px var(--bg), 0 0 14px var(--teal); }
+  .stop.current .stop-node { border-color: var(--amber); box-shadow: 0 0 0 4px var(--bg), 0 0 14px var(--amber); }
+  .stop-meta { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .stop-role { font-family: var(--display); font-size: 1.05rem; font-weight: 600; color: var(--text); }
+  .stop-date { font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); }
+  .stop-co { font-size: 13px; color: var(--teal); margin-bottom: 10px; font-family: var(--mono); }
+  .stop-list { list-style: none; }
+  .stop-list li { font-size: 13.5px; color: var(--text-dim); line-height: 1.7; padding-left: 16px; position: relative; margin-bottom: 5px; }
+  .stop-list li::before { content: '›'; position: absolute; left: 0; color: var(--amber); }
+
+  /* ── CONTACT ── */
+  .contact-panel {
+    border: 1px solid var(--line); border-radius: 14px; background: var(--panel);
+    padding: 48px; text-align: center; position: relative; overflow: hidden;
+  }
+  .contact-panel::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, var(--teal-dim), transparent 60%);
+    pointer-events: none;
+  }
+  .contact-panel h2 { font-family: var(--display); font-size: clamp(1.6rem, 3.4vw, 2.3rem); font-weight: 600; margin-bottom: 12px; position: relative; }
+  .contact-panel .lead { color: var(--text-dim); font-size: 14.5px; max-width: 480px; margin: 0 auto 30px; position: relative; }
+  .contact-links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; }
+  .contact-links a { font-family: var(--mono); font-size: 13px; color: var(--text); border: 1px solid var(--line-bright); padding: 12px 20px; border-radius: 8px; transition: all 0.2s; }
+  .contact-links a:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); transform: translateY(-2px); }
+
+  .mqtt-line { font-family: var(--mono); font-size: 11px; color: var(--text-faint); margin-top: 26px; position: relative; }
+  .mqtt-line span { color: var(--teal); }
+
+  footer { text-align: center; padding: 40px 32px 50px; font-family: var(--mono); font-size: 11px; color: var(--text-faint); position: relative; z-index: 1; }
+
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   EXTRA MOTION LAYER
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Animated ambient glow */
+body::before {
+  content: "";
+  position: fixed;
+  width: 55vw;
+  height: 55vw;
+  max-width: 720px;
+  max-height: 720px;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%, -20%);
+  background: radial-gradient(circle, rgba(69,214,196,.075), transparent 68%);
+  filter: blur(18px);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientDrift 10s ease-in-out infinite alternate;
+}
+@keyframes ambientDrift {
+  0% { transform: translate(-54%, -18%) scale(.92); opacity:.55; }
+  100% { transform: translate(-46%, -12%) scale(1.08); opacity:1; }
+}
+
+/* Grid slowly breathes */
+.grid-field {
+  animation: gridBreath 8s ease-in-out infinite alternate;
+}
+@keyframes gridBreath {
+  from { opacity:.22; transform: scale(1); }
+  to { opacity:.38; transform: scale(1.025); }
+}
+
+/* Navigation entrance + active hover sweep */
+.nav {
+  animation: navDrop .8s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes navDrop {
+  from { transform: translateY(-100%); opacity:0; }
+  to { transform: translateY(0); opacity:1; }
+}
+.nav-links a {
+  position: relative;
+  overflow: hidden;
+}
+.nav-links a::after {
+  content:"";
+  position:absolute;
+  left:14px; right:14px; bottom:4px;
+  height:1px;
+  background:var(--teal);
+  transform:scaleX(0);
+  transform-origin:right;
+  transition:transform .3s ease;
+}
+.nav-links a:hover::after {
+  transform:scaleX(1);
+  transform-origin:left;
+}
+
+/* Hero text has a tiny terminal-like cursor */
+.hero h1 {
+  text-shadow: 0 0 35px rgba(69,214,196,.04);
+}
+.hero-eyebrow {
+  animation: riseIn .7s .1s ease forwards, eyebrowPulse 3s 1.2s ease-in-out infinite;
+}
+@keyframes eyebrowPulse {
+  0%,100% { box-shadow:0 0 0 rgba(69,214,196,0); }
+  50% { box-shadow:0 0 24px rgba(69,214,196,.10); }
+}
+
+/* CTA magnetic-looking shine */
+.btn {
+  position:relative;
+  overflow:hidden;
+}
+.btn::after {
+  content:"";
+  position:absolute;
+  top:-60%;
+  left:-90%;
+  width:55%;
+  height:220%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+  transform:rotate(18deg);
+  transition:left .65s ease;
+}
+.btn:hover::after { left:145%; }
+
+/* Cards tilt/glow */
+.proj-card, .sub-card, .status-panel, .contact-panel {
+  will-change: transform;
+}
+.proj-card::after {
+  content:"";
+  position:absolute;
+  inset:-1px;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(69,214,196,.12), transparent 32%);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s ease;
+}
+.proj-card:hover::after { opacity:1; }
+
+/* Project card animated corner scanner */
+.proj-card .corner {
+  transition: all .3s ease;
+}
+.proj-card:hover .corner.tl {
+  transform:translate(2px,2px);
+}
+.proj-card:hover .corner.br {
+  transform:translate(-2px,-2px);
+}
+
+/* Chips/pills float into view */
+.proj-card.in-view .chip,
+.sub-card.in-view .skill-pill {
+  animation: chipIn .5s both;
+}
+.proj-card.in-view .chip:nth-child(2),
+.sub-card.in-view .skill-pill:nth-child(2) { animation-delay:.05s; }
+.proj-card.in-view .chip:nth-child(3),
+.sub-card.in-view .skill-pill:nth-child(3) { animation-delay:.10s; }
+.proj-card.in-view .chip:nth-child(4),
+.sub-card.in-view .skill-pill:nth-child(4) { animation-delay:.15s; }
+.proj-card.in-view .chip:nth-child(5),
+.sub-card.in-view .skill-pill:nth-child(5) { animation-delay:.20s; }
+@keyframes chipIn {
+  from { opacity:0; transform:translateY(7px) scale(.96); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* Timeline route animation */
+.route::before {
+  background:repeating-linear-gradient(
+    var(--line-bright) 0 6px,
+    transparent 6px 12px
+  );
+  background-size:100% 24px;
+  animation: routeFlow 1.2s linear infinite;
+}
+@keyframes routeFlow {
+  to { background-position:0 24px; }
+}
+.stop-node {
+  animation: nodePulse 2.2s ease-in-out infinite;
+}
+.stop:nth-child(2) .stop-node { animation-delay:.7s; }
+@keyframes nodePulse {
+  0%,100% { transform:scale(1); }
+  50% { transform:scale(1.25); }
+}
+.stop.current .stop-node {
+  animation: currentNode 1.5s ease-in-out infinite;
+}
+@keyframes currentNode {
+  0%,100% { transform:scale(1); box-shadow:0 0 0 4px var(--bg),0 0 14px var(--amber); }
+  50% { transform:scale(1.35); box-shadow:0 0 0 4px var(--bg),0 0 30px var(--amber); }
+}
+
+/* Status panel live scan */
+.status-panel {
+  position:relative;
+  overflow:hidden;
+}
+.status-panel::after {
+  content:"";
+  position:absolute;
+  left:0; right:0;
+  top:-20%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--teal),transparent);
+  box-shadow:0 0 14px var(--teal);
+  opacity:.45;
+  animation: statusScan 4s linear infinite;
+}
+@keyframes statusScan {
+  0% { top:-5%; }
+  100% { top:105%; }
+}
+
+/* Contact panel radar rings */
+.contact-panel::before {
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  left:50%;
+  top:0;
+  transform:translate(-50%,-55%);
+  border:1px solid rgba(69,214,196,.12);
+  border-radius:50%;
+  box-shadow:0 0 0 28px rgba(69,214,196,.025),0 0 0 56px rgba(69,214,196,.018);
+  animation: radarPulse 4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes radarPulse {
+  0%,100% { transform:translate(-50%,-55%) scale(.85); opacity:.45; }
+  50% { transform:translate(-50%,-55%) scale(1.08); opacity:1; }
+}
+
+/* Contact links lift + glow */
+.contact-links a {
+  position:relative;
+}
+.contact-links a:hover {
+  box-shadow:0 10px 30px -16px rgba(255,179,43,.8);
+}
+
+/* Section headings get a tiny terminal cursor */
+.section-title::after {
+  content:"_";
+  color:var(--teal);
+  animation: cursorBlink 1s steps(1) infinite;
+  margin-left:4px;
+  font-family:var(--mono);
+  font-size:.65em;
+}
+@keyframes cursorBlink {
+  0%,45% { opacity:1; }
+  46%,100% { opacity:0; }
+}
+
+/* Floating particles */
+.particle-layer {
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.particle {
+  position:absolute;
+  width:2px;
+  height:2px;
+  border-radius:50%;
+  background:var(--teal);
+  box-shadow:0 0 8px var(--teal);
+  opacity:0;
+  animation:particleFloat var(--dur) linear infinite;
+  animation-delay:var(--delay);
+}
+@keyframes particleFloat {
+  0% { transform:translate3d(0,15vh,0) scale(.5); opacity:0; }
+  15% { opacity:.45; }
+  70% { opacity:.18; }
+  100% { transform:translate3d(var(--drift),-110vh,0) scale(1.4); opacity:0; }
+}
+
+/* Mobile performance */
+@media (max-width:760px) {
+  body::before { width:100vw; height:100vw; }
+  .grid-field { animation:none; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="grid-field"></div>
+<div class="particle-layer" id="particleLayer"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-mark"><span class="dot"></span>RV<span style="color:var(--text-faint)">://</span>embedded</div>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">MENU</button>
+  <div class="nav-links" id="navLinks">
+    <a href="#about">About</a>
+    <a href="#systems">Systems</a>
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact" class="cta">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-canvas-wrap"><canvas id="armCanvas" width="900" height="560"></canvas></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">● system online — coimbatore, in</div>
+    <h1>Rakesh<br>Vijaya<span>krishnan</span></h1>
+    <div class="hero-role">Full-Stack Embedded Engineer<span class="sep">·</span><span class="hl">AGV Navigation</span><span class="sep">·</span><span class="hl">ASRS Robotics</span><span class="sep">·</span><span class="hl">IoT</span></div>
+    <p class="hero-desc">I build the firmware, motion control, and fleet logic that make warehouse robots find their way — from RFID-tagged coordinates and Dijkstra routing to the pick-to-light displays that keep humans in the loop.</p>
+    <div class="hero-cta">
+      <a href="#systems" class="btn btn-primary">→ View systems built</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>SCROLL</span><span class="line"></span></div>
+</header>
+
+<main>
+
+  <!-- ABOUT -->
+  <section class="block wrap" id="about">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="eyebrow">// about</div>
+        <h2 class="section-title">I ship the layer between hardware and warehouse logic.</h2>
+        <div class="about-text">
+          <p>I'm an embedded software engineer on the <strong>Industrial Robotics team at Leapmile Logistics</strong>, where I own the software stack behind an automated storage &amp; retrieval system (ASRS) — from the AGVs that physically move trays, to the pick-to-light displays that guide the humans who work alongside them.</p>
+          <p>My background spans firmware (C/C++, MicroPython on ESP32 and PIC), motor control, PCB design, and cloud-connected IoT backends. I like problems that sit at the boundary of hardware and software — where a routing algorithm on paper has to survive contact with a real motor, a noisy sensor, and a warehouse full of moving parts.</p>
+          <p>Before robotics, I spent two years at REON Infotech building and validating embedded control boards from schematic to shipped hardware.</p>
+        </div>
+      </div>
+      <div class="reveal status-panel">
+        <div class="ph">// engineer.status</div>
+        <div class="status-row"><span class="k">role</span><span class="v">Full-Stack Embedded Engineer</span></div>
+        <div class="status-row"><span class="k">current_team</span><span class="v teal">Industrial Robotics</span></div>
+        <div class="status-row"><span class="k">experience</span><span class="v">4+ years</span></div>
+        <div class="status-row"><span class="k">core_systems</span><span class="v amber">AGV · ASRS · IoT Lockers</span></div>
+        <div class="status-row"><span class="k">languages</span><span class="v">C, C++, Python, MicroPython</span></div>
+        <div class="status-row"><span class="k">location</span><span class="v">Coimbatore, IN</span></div>
+        <div class="status-row"><span class="k">status</span><span class="v teal">● open to opportunities</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYSTEMS / PROJECTS -->
+  <section class="block wrap" id="systems">
+    <div class="section-head reveal">
+      <div class="eyebrow">// systems built</div>
+      <h2 class="section-title">Selected engineering work</h2>
+      <p class="section-sub">Production systems I've designed, built, and shipped inside the ASRS at Leapmile Logistics — plus the embedded groundwork before it.</p>
+    </div>
+
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">Fleet Navigation</span>
+        <h3>AGV Fleet &amp; Pathfinding</h3>
+        <p>Line-following AGVs that retrieve trays across the warehouse, localized via RFID-tagged coordinates and routed with Dijkstra's shortest-path algorithm. A Python/Matplotlib tool plots every vehicle's live position on the warehouse map for the team to monitor.</p>
+        <div class="proj-chips">
+          <span class="chip">ESP32 · C++</span><span class="chip">RFID</span><span class="chip">Dijkstra</span><span class="chip">MQTT</span><span class="chip">Python / Matplotlib</span>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">Pick Automation</span>
+        <h3>Pick-to-Light &amp; SCARA Picking</h3>
+        <p>Smart display system for ASRS picking stations that lights up the correct rack and quantity per order — with a dedicated "XXXX" safety mode that stops mis-picks outright. The SCARA arm's pick motion is planned with RRT and RRT* on a URDF model of the arm and simulated end-to-end before any trajectory is ever sent to the physical machine.</p>
+        <div class="proj-chips">
+          <span class="chip">Embedded C</span><span class="chip">MQTT Pub/Sub</span><span class="chip">SCARA Integration</span><span class="chip">RRT / RRT*</span><span class="chip">URDF Simulation</span><span class="chip">Safety Logic</span>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">IoT Product</span>
+        <h3>Qikpod Smart Pod Lockers</h3>
+        <p>End-to-end locker product — hardware, firmware, and cloud backend built from scratch. Shipped four distinct access modes (Standard, Ad-hoc, Dynamic, Static) to serve both parcel logistics and self-storage rental use cases.</p>
+        <div class="proj-chips">
+          <span class="chip">MicroPython</span><span class="chip">REST · Swagger</span><span class="chip">DigitalOcean</span><span class="chip">Nginx</span>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">Motion Systems</span>
+        <h3>AGV Drive &amp; Motor Control</h3>
+        <p>Full-ownership AGV hardware: 36V BLDC motors with planetary gear reduction for torque under load, IMU sensor fusion for stable heading, and the firmware to tie sensors, drivers, and comms together over I2C, UART, and SPI.</p>
+        <div class="proj-chips">
+          <span class="chip">BLDC · PWM</span><span class="chip">IMU Fusion</span><span class="chip">I2C / UART / SPI</span>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">Infrastructure</span>
+        <h3>Fleet &amp; Locker Backend</h3>
+        <p>Production backend for locker and fleet management deployed on DigitalOcean — REST APIs documented in Swagger, an MQTT broker handling real-time device traffic, and Linux servers managed over SSH with static IP configuration.</p>
+        <div class="proj-chips">
+          <span class="chip">Linux · SSH</span><span class="chip">MQTT Broker</span><span class="chip">Nginx</span><span class="chip">REST API</span>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">Foundations · REON Infotech</span>
+        <h3>Industrial Control Boards</h3>
+        <p>Two-layer PCBs designed from schematic to layout for industrial automation products, with PIC16F877A firmware driving the sensing and actuation logic — plus Python/Bash test automation across NodeMCU and ESP32 boards.</p>
+        <div class="proj-chips">
+          <span class="chip">PIC16F877A</span><span class="chip">2-Layer PCB</span><span class="chip">Test Automation</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="block wrap" id="skills">
+    <div class="section-head reveal">
+      <div class="eyebrow">// subsystems</div>
+      <h2 class="section-title">What I build with</h2>
+      <p class="section-sub">Grouped the way I actually reach for them — by the layer of the stack they solve.</p>
+    </div>
+
+    <div class="sub-grid">
+      <div class="sub-card reveal">
+        <div class="sub-head"><span class="sub-name">Firmware &amp; Protocols</span><span class="sub-idx">SUB-01</span></div>
+        <div class="tag-row">
+          <span class="skill-pill">C</span><span class="skill-pill">C++</span><span class="skill-pill">MicroPython</span>
+          <span class="skill-pill">I2C</span><span class="skill-pill">SPI</span><span class="skill-pill">UART</span>
+          <span class="skill-pill">CAN Bus</span><span class="skill-pill">Modbus</span><span class="skill-pill">RTOS basics</span>
+        </div>
+      </div>
+      <div class="sub-card reveal">
+        <div class="sub-head"><span class="sub-name">Motion &amp; Hardware</span><span class="sub-idx">SUB-02</span></div>
+        <div class="tag-row">
+          <span class="skill-pill">BLDC Motor Control</span><span class="skill-pill">PWM</span><span class="skill-pill">Planetary Gearing</span>
+          <span class="skill-pill">IMU Fusion</span><span class="skill-pill">PCB Design</span><span class="skill-pill">Circuit Debugging</span>
+        </div>
+      </div>
+      <div class="sub-card reveal">
+        <div class="sub-head"><span class="sub-name">Navigation &amp; Robotics</span><span class="sub-idx">SUB-03</span></div>
+        <div class="tag-row">
+          <span class="skill-pill">AGV Line Following</span><span class="skill-pill">RFID Localization</span><span class="skill-pill">Dijkstra</span>
+          <span class="skill-pill">Fleet Management</span><span class="skill-pill">SCARA Integration</span><span class="skill-pill">RRT / RRT*</span><span class="skill-pill">URDF Simulation</span>
+        </div>
+      </div>
+      <div class="sub-card reveal">
+        <div class="sub-head"><span class="sub-name">Cloud &amp; IoT</span><span class="sub-idx">SUB-04</span></div>
+        <div class="tag-row">
+          <span class="skill-pill">MQTT Pub/Sub</span><span class="skill-pill">REST · Swagger</span><span class="skill-pill">DigitalOcean</span>
+          <span class="skill-pill">Nginx</span><span class="skill-pill">Linux / SSH</span><span class="skill-pill">Python · Matplotlib</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="block wrap" id="experience">
+    <div class="section-head reveal">
+      <div class="eyebrow">// career route</div>
+      <h2 class="section-title">Where I've worked</h2>
+      <p class="section-sub">Two stops so far — each one a step further into the hardware-software boundary.</p>
+    </div>
+
+    <div class="route">
+      <div class="stop current reveal">
+        <div class="stop-node"></div>
+        <div class="stop-meta"><span class="stop-role">Embedded Software Engineer — Industrial Robotics</span><span class="stop-date">Aug 2023 – Present</span></div>
+        <div class="stop-co">Leapmile Logistics Pvt Ltd · Bangalore</div>
+        <ul class="stop-list">
+          <li>Own the embedded stack for an ASRS — AGV navigation, Pick-to-Light, SCARA picking, and fleet management.</li>
+          <li>Plan SCARA pick trajectories with RRT and RRT* against a URDF model of the arm, simulating every path before it's ever sent to the real machine.</li>
+          <li>Built the Qikpod smart locker product end-to-end: hardware, firmware, and cloud backend.</li>
+          <li>Shipped MQTT-based real-time infrastructure connecting AGVs, displays, and the fleet server.</li>
+        </ul>
+      </div>
+      <div class="stop reveal">
+        <div class="stop-node"></div>
+        <div class="stop-meta"><span class="stop-role">Embedded Engineer</span><span class="stop-date">Apr 2021 – Aug 2023</span></div>
+        <div class="stop-co">REON Infotech · Coimbatore</div>
+        <ul class="stop-list">
+          <li>Wrote C/C++ firmware for PIC16F877A control boards used in industrial automation.</li>
+          <li>Designed 2-layer PCBs from schematic to layout and validated them through hardware bring-up.</li>
+          <li>Automated firmware testing on NodeMCU/ESP32 with Python and Bash scripts.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="block wrap" id="contact">
+    <div class="contact-panel reveal">
+      <h2>Let's build something that has to work in the real world.</h2>
+      <p class="lead">Open to Senior Embedded / Robotics / IoT Engineer roles — reach out and I'll get back to you.</p>
+      <div class="contact-links">
+        <a href="mailto:rakeshvijayakrishnan98@gmail.com">✉ rakeshvijayakrishnan98@gmail.com</a>
+        <a href="tel:+919597414683">☎ +91 95974 14683</a>
+        <a href="#about">📍 Coimbatore, Tamil Nadu</a>
+      </div>
+      <div class="mqtt-line">topic: <span>contact/rakesh</span> · qos: 1 · retained: true</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>© 2026 Rakesh Vijayakrishnan — built with C, coffee, and a healthy respect for RFID collisions.</footer>
+
+<script>
+  // Nav scroll state + mobile toggle
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // Scroll reveal
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); observer.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (reduceMotion) { el.classList.add('in-view'); } else { observer.observe(el); }
+  });
+
+  // ── Hero: geometric SCARA "mantis" arm animation ──────────────────
+  // Visualizes an RRT*-planned pick path being explored, simulated
+  // against a URDF model, then executed by a 2-link SCARA arm —
+  // loops continuously (no draw-once/stop behavior).
+  const canvas = document.getElementById('armCanvas');
+  const ctx = canvas.getContext('2d');
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  let W = canvas.width, H = canvas.height;
+  let BASE = { x: 0, y: 0 };
+  let L1 = 0, L2 = 0;
+
+  function resizeCanvas() {
+    const size = Math.min(window.innerWidth * 0.9, 900);
+    W = size; H = size * 0.62;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    BASE = { x: W * 0.24, y: H * 0.86 };
+    L1 = H * 0.34;
+    L2 = H * 0.30;
+    buildScene();
+  }
+
+  // Rack targets the arm reaches across the cycle (pick-station coordinates)
+  function targets() {
+    return [
+      { x: W * 0.78, y: H * 0.22 },
+      { x: W * 0.66, y: H * 0.58 },
+      { x: W * 0.86, y: H * 0.50 },
+    ];
+  }
+  let targetIdx = 0;
+  let tree = [];      // RRT* exploration segments: {a,b,accepted}
+  let chosenPath = []; // final smoothed path points, root -> goal
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  // Build a plausible RRT*-style search tree biased toward the goal,
+  // then extract a chosen (shortest-found) path from root to goal.
+  function buildScene() {
+    const goal = targets()[targetIdx];
+    const nodes = [{ x: BASE.x, y: BASE.y, parent: -1, cost: 0 }];
+    const maxReach = L1 + L2;
+    const bounds = { x0: W * 0.32, y0: H * 0.06, x1: W * 0.96, y1: H * 0.92 };
+
+    for (let i = 0; i < 130; i++) {
+      const toGoal = Math.random() < 0.12;
+      const sample = toGoal
+        ? goal
+        : { x: rand(bounds.x0, bounds.x1), y: rand(bounds.y0, bounds.y1) };
+
+      // nearest existing node
+      let nearest = 0, nd = Infinity;
+      for (let j = 0; j < nodes.length; j++) {
+        const d = Math.hypot(nodes[j].x - sample.x, nodes[j].y - sample.y);
+        if (d < nd) { nd = d; nearest = j; }
+      }
+      const step = 26;
+      const ang = Math.atan2(sample.y - nodes[nearest].y, sample.x - nodes[nearest].x);
+      const nx = nodes[nearest].x + Math.cos(ang) * Math.min(step, nd);
+      const ny = nodes[nearest].y + Math.sin(ang) * Math.min(step, nd);
+      if (Math.hypot(nx - BASE.x, ny - BASE.y) > maxReach) continue;
+
+      // RRT*-style rewiring: connect to lowest-cost nearby neighbor
+      let bestParent = nearest;
+      let bestCost = nodes[nearest].cost + Math.hypot(nx - nodes[nearest].x, ny - nodes[nearest].y);
+      for (let j = 0; j < nodes.length; j++) {
+        const d = Math.hypot(nodes[j].x - nx, nodes[j].y - ny);
+        if (d < 42) {
+          const c = nodes[j].cost + d;
+          if (c < bestCost) { bestCost = c; bestParent = j; }
+        }
+      }
+      nodes.push({ x: nx, y: ny, parent: bestParent, cost: bestCost });
+    }
+
+    tree = nodes.slice(1).map(n => ({ a: nodes[n.parent], b: n }));
+
+    // pick the tree node nearest the goal as the reached endpoint
+    let goalNode = 0, gd = Infinity;
+    nodes.forEach((n, i) => {
+      const d = Math.hypot(n.x - goal.x, n.y - goal.y);
+      if (d < gd) { gd = d; goalNode = i; }
+    });
+    const chain = [];
+    let cur = goalNode;
+    while (cur !== -1) { chain.unshift(nodes[cur]); cur = nodes[cur].parent; }
+    chosenPath = chain;
+  }
+
+  function solveIK(target) {
+    let dx = target.x - BASE.x, dy = target.y - BASE.y;
+    let d = Math.hypot(dx, dy);
+    d = Math.min(Math.max(d, Math.abs(L1 - L2) + 1), L1 + L2 - 1);
+    const a1 = Math.atan2(dy, dx);
+    let cosA2 = (L1 * L1 + d * d - L2 * L2) / (2 * L1 * d);
+    cosA2 = Math.max(-1, Math.min(1, cosA2));
+    const a2 = Math.acos(cosA2);
+    const theta1 = a1 + a2; // elbow-up "mantis" bend
+    const elbow = { x: BASE.x + L1 * Math.cos(theta1), y: BASE.y + L1 * Math.sin(theta1) };
+    return { elbow, end: { x: elbow.x + L2 * Math.cos(Math.atan2(target.y - elbow.y, target.x - elbow.x)),
+                            y: elbow.y + L2 * Math.sin(Math.atan2(target.y - elbow.y, target.x - elbow.x)) } };
+  }
+
+  function pointAtPathFrac(f) {
+    if (chosenPath.length < 2) return chosenPath[0] || BASE;
+    const lens = [];
+    let total = 0;
+    for (let i = 1; i < chosenPath.length; i++) {
+      const l = Math.hypot(chosenPath[i].x - chosenPath[i-1].x, chosenPath[i].y - chosenPath[i-1].y);
+      lens.push(l); total += l;
+    }
+    let target = f * total, acc = 0;
+    for (let i = 0; i < lens.length; i++) {
+      if (acc + lens[i] >= target) {
+        const seg = lens[i] === 0 ? 0 : (target - acc) / lens[i];
+        const a = chosenPath[i], b = chosenPath[i+1];
+        return { x: a.x + (b.x - a.x) * seg, y: a.y + (b.y - a.y) * seg };
+      }
+      acc += lens[i];
+    }
+    return chosenPath[chosenPath.length - 1];
+  }
+
+  function easeInOut(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+
+  // Animation cycle phases (ms)
+  const T_EXPLORE = 1500, T_HOLD_PATH = 700, T_MOVE = 1800, T_PICK = 400, T_RETURN = 1000, T_RESET = 500;
+  const T_TOTAL = T_EXPLORE + T_HOLD_PATH + T_MOVE + T_PICK + T_RETURN + T_RESET;
+
+  let cycleStart = null;
+  let advancedThisCycle = false;
+
+  function drawTree(revealFrac) {
+    const count = Math.floor(tree.length * revealFrac);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(69,214,196,0.28)';
+    for (let i = 0; i < count; i++) {
+      const s = tree[i];
+      ctx.beginPath();
+      ctx.moveTo(s.a.x, s.a.y);
+      ctx.lineTo(s.b.x, s.b.y);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(69,214,196,0.35)';
+    for (let i = 0; i < count; i++) {
+      ctx.beginPath();
+      ctx.arc(tree[i].b.x, tree[i].b.y, 1.4, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  function drawChosenPath(alpha) {
+    if (chosenPath.length < 2) return;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.strokeStyle = '#ffb32b';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([1, 7]);
+    ctx.shadowColor = 'rgba(255,179,43,0.5)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.moveTo(chosenPath[0].x, chosenPath[0].y);
+    for (let i = 1; i < chosenPath.length; i++) ctx.lineTo(chosenPath[i].x, chosenPath[i].y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+  }
+
+  function drawBase() {
+    ctx.beginPath();
+    ctx.fillStyle = 'rgba(234,240,245,0.9)';
+    ctx.arc(BASE.x, BASE.y, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(69,214,196,0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(BASE.x, BASE.y, 11, 0, Math.PI*2); ctx.stroke();
+    // mounting struts, mantis "thorax" hint
+    ctx.strokeStyle = 'rgba(140,160,180,0.3)';
+    ctx.beginPath();
+    ctx.moveTo(BASE.x - 16, BASE.y + 14); ctx.lineTo(BASE.x, BASE.y);
+    ctx.moveTo(BASE.x + 16, BASE.y + 14); ctx.lineTo(BASE.x, BASE.y);
+    ctx.stroke();
+  }
+
+  function drawArm(end, elbow, gripperOpen) {
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+
+    // link 1 (upper arm)
+    ctx.strokeStyle = 'rgba(234,240,245,0.85)';
+    ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(BASE.x, BASE.y); ctx.lineTo(elbow.x, elbow.y); ctx.stroke();
+
+    // link 2 (forearm) — thinner, more angular, mantis-like taper
+    ctx.strokeStyle = 'rgba(234,240,245,0.7)';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(elbow.x, elbow.y); ctx.lineTo(end.x, end.y); ctx.stroke();
+
+    // elbow joint — glowing pad
+    ctx.fillStyle = '#45d6c4';
+    ctx.shadowColor = 'rgba(69,214,196,0.8)';
+    ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.arc(elbow.x, elbow.y, 4, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // end-effector: mantis-claw / SCARA gripper, opens & closes
+    const ang = Math.atan2(end.y - elbow.y, end.x - elbow.x);
+    const spread = gripperOpen ? 0.55 : 0.14;
+    const clawLen = 12;
+    ctx.strokeStyle = '#ffb32b';
+    ctx.lineWidth = 2.2;
+    ctx.shadowColor = 'rgba(255,179,43,0.7)';
+    ctx.shadowBlur = 7;
+    [1, -1].forEach(side => {
+      ctx.beginPath();
+      ctx.moveTo(end.x, end.y);
+      ctx.lineTo(end.x + Math.cos(ang + side * spread) * clawLen, end.y + Math.sin(ang + side * spread) * clawLen);
+      ctx.stroke();
+    });
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ffb32b';
+    ctx.beginPath(); ctx.arc(end.x, end.y, 2.6, 0, Math.PI*2); ctx.fill();
+  }
+
+  function drawLabel(text, x, y, color, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = '10px "JetBrains Mono", monospace';
+    ctx.fillStyle = color;
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
+  // ── AGV: drives a tray in from the left, waits while the arm picks
+  // it, then drives back out — synced to the same cycle as the arm.
+  const trackY = () => BASE.y + 26;
+  const agvStopX = () => BASE.x - 78;
+
+  function agvXAt(t) {
+    const enterEnd = T_EXPLORE + T_HOLD_PATH * 0.4;
+    const exitStart = T_EXPLORE + T_HOLD_PATH + T_MOVE + T_PICK;
+    const exitEnd = T_TOTAL;
+    const stopX = agvStopX();
+    if (t < enterEnd) {
+      const f = easeInOut(Math.min(1, t / enterEnd));
+      return -70 + f * (stopX - (-70));
+    } else if (t < exitStart) {
+      return stopX;
+    } else if (t < exitEnd) {
+      const f = easeInOut(Math.min(1, (t - exitStart) / (exitEnd - exitStart)));
+      return stopX + f * (W + 70 - stopX);
+    }
+    return -70;
+  }
+
+  function drawTrack() {
+    const y = trackY();
+    ctx.save();
+    ctx.strokeStyle = 'rgba(69,214,196,0.18)';
+    ctx.setLineDash([4, 6]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, y + 10);
+    ctx.lineTo(W, y + 10);
+    ctx.stroke();
+    ctx.restore();
+
+    // RFID coordinate tags along the track
+    [0.06, 0.32, 0.52].forEach(fx => {
+      const x = W * fx;
+      ctx.strokeStyle = 'rgba(255,179,43,0.3)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(x, y + 10, 3, 0, Math.PI * 2); ctx.stroke();
+    });
+  }
+
+  function drawAGV(x, moving) {
+    const y = trackY();
+    ctx.save();
+    ctx.translate(x, y);
+
+    // motion trail while driving
+    if (moving) {
+      const grad = ctx.createLinearGradient(-34, 0, 0, 0);
+      grad.addColorStop(0, 'rgba(69,214,196,0)');
+      grad.addColorStop(1, 'rgba(69,214,196,0.35)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(-34, -2, 34, 4);
+    }
+
+    // chassis
+    ctx.strokeStyle = 'rgba(234,240,245,0.85)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(-20, -9, 40, 18, 3) : ctx.rect(-20, -9, 40, 18);
+    ctx.stroke();
+
+    // wheels
+    ctx.fillStyle = 'rgba(140,160,180,0.55)';
+    [-13, 13].forEach(wx => {
+      ctx.beginPath(); ctx.arc(wx, 10, 3.2, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // tray on top with RFID chip
+    ctx.strokeStyle = 'rgba(255,179,43,0.75)';
+    ctx.lineWidth = 1.3;
+    ctx.strokeRect(-12, -16, 24, 7);
+    ctx.fillStyle = '#ffb32b';
+    ctx.beginPath(); ctx.arc(0, -12.5, 1.6, 0, Math.PI * 2); ctx.fill();
+
+    // status LED — teal while moving, amber while stopped/loading
+    ctx.fillStyle = moving ? '#45d6c4' : '#ffb32b';
+    ctx.shadowColor = moving ? 'rgba(69,214,196,0.8)' : 'rgba(255,179,43,0.8)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath(); ctx.arc(16, -5, 1.8, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
+  }
+
+  function drawFrame(elapsed) {
+    ctx.clearRect(0, 0, W, H);
+
+    const t = elapsed % T_TOTAL;
+    let phase, pf;
+    if (t < T_EXPLORE) { phase = 'explore'; pf = t / T_EXPLORE; }
+    else if (t < T_EXPLORE + T_HOLD_PATH) { phase = 'hold'; pf = (t - T_EXPLORE) / T_HOLD_PATH; }
+    else if (t < T_EXPLORE + T_HOLD_PATH + T_MOVE) { phase = 'move'; pf = (t - T_EXPLORE - T_HOLD_PATH) / T_MOVE; }
+    else if (t < T_EXPLORE + T_HOLD_PATH + T_MOVE + T_PICK) { phase = 'pick'; pf = (t - T_EXPLORE - T_HOLD_PATH - T_MOVE) / T_PICK; }
+    else if (t < T_EXPLORE + T_HOLD_PATH + T_MOVE + T_PICK + T_RETURN) { phase = 'return'; pf = (t - T_EXPLORE - T_HOLD_PATH - T_MOVE - T_PICK) / T_RETURN; }
+    else { phase = 'reset'; pf = (t - T_EXPLORE - T_HOLD_PATH - T_MOVE - T_PICK - T_RETURN) / T_RESET; }
+
+    drawTree(phase === 'explore' ? easeInOut(pf) : 1);
+
+    const pathAlpha = phase === 'explore' ? 0 : phase === 'reset' ? Math.max(0, 1 - pf) : 1;
+    drawChosenPath(pathAlpha);
+
+    drawTrack();
+    const agvX = agvXAt(t);
+    const agvMoving = agvX !== agvStopX();
+    drawAGV(agvX, agvMoving);
+
+    drawBase();
+
+    let end, elbow, gripperOpen = true;
+    if (phase === 'explore' || phase === 'hold') {
+      const home = solveIK({ x: BASE.x + L1 * 0.9, y: BASE.y - L2 * 0.55 });
+      end = home.end; elbow = home.elbow; gripperOpen = true;
+    } else if (phase === 'move') {
+      const p = pointAtPathFrac(easeInOut(pf));
+      const ik = solveIK(p);
+      end = ik.end; elbow = ik.elbow; gripperOpen = pf < 0.92;
+    } else if (phase === 'pick') {
+      const p = chosenPath[chosenPath.length - 1] || targets()[targetIdx];
+      const ik = solveIK(p);
+      end = ik.end; elbow = ik.elbow; gripperOpen = false;
+    } else if (phase === 'return') {
+      const from = chosenPath[chosenPath.length - 1] || targets()[targetIdx];
+      const home = { x: BASE.x + L1 * 0.9, y: BASE.y - L2 * 0.55 };
+      const p = { x: from.x + (home.x - from.x) * easeInOut(pf), y: from.y + (home.y - from.y) * easeInOut(pf) };
+      const ik = solveIK(p);
+      end = ik.end; elbow = ik.elbow; gripperOpen = false;
+    } else {
+      const home = solveIK({ x: BASE.x + L1 * 0.9, y: BASE.y - L2 * 0.55 });
+      end = home.end; elbow = home.elbow; gripperOpen = true;
+      if (!advancedThisCycle) {
+        targetIdx = (targetIdx + 1) % targets().length;
+        buildScene();
+        advancedThisCycle = true;
+      }
+    }
+    if (phase === 'explore') advancedThisCycle = false;
+
+    drawArm(end, elbow, gripperOpen);
+
+    // technical annotations — quietly reinforce the RRT*/URDF concept
+    const labelAlphaExplore = phase === 'explore' ? 0.85 : phase === 'hold' ? 0.85 : 0;
+    drawLabel('rrt* — searching configuration space', W * 0.30, H * 0.10, 'rgba(69,214,196,0.8)', labelAlphaExplore);
+    const labelAlphaPath = (phase === 'hold' || phase === 'move') ? 0.85 : 0;
+    drawLabel('urdf: scara_arm.urdf — sim verified', W * 0.30, H * 0.955, 'rgba(255,179,43,0.8)', labelAlphaPath);
+    const labelAlphaPick = phase === 'pick' ? 1 : phase === 'return' ? Math.max(0, 1 - pf * 2) : 0;
+    if (labelAlphaPick > 0) drawLabel('✓ path executed on hardware', end.x + 14, end.y - 10, 'rgba(255,255,255,0.85)', labelAlphaPick);
+
+    const labelAlphaAgv = !agvMoving ? 0.75 : 0;
+    if (labelAlphaAgv > 0) drawLabel('agv holding · tray on station', agvStopX() - 46, trackY() + 30, 'rgba(69,214,196,0.75)', labelAlphaAgv);
+  }
+
+  let animStart = null;
+  function loop(ts) {
+    if (animStart === null) animStart = ts;
+    const elapsed = ts - animStart;
+    drawFrame(reduceMotion ? T_EXPLORE + T_HOLD_PATH : elapsed);
+    if (!reduceMotion) requestAnimationFrame(loop);
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  requestAnimationFrame(loop);
+
+  // subtle parallax on hero canvas from mouse
+  const heroCanvasWrap = document.querySelector('.hero-canvas-wrap');
+  if (!reduceMotion) {
+    document.querySelector('.hero').addEventListener('mousemove', (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) / rect.width - 0.5;
+      const my = (e.clientY - rect.top) / rect.height - 0.5;
+      heroCanvasWrap.style.transform = `translate(${mx * 10}px, ${my * 10}px)`;
+    });
+  }
+
+  // ── Extra animation system ──────────────────────────────────────
+  // Floating particles create a subtle "network telemetry" feel.
+  const particleLayer = document.getElementById('particleLayer');
+  if (!reduceMotion && particleLayer) {
+    const particleCount = window.innerWidth < 700 ? 18 : 34;
+    for (let i = 0; i < particleCount; i++) {
+      const p = document.createElement('span');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = (70 + Math.random() * 50) + '%';
+      p.style.setProperty('--dur', (8 + Math.random() * 12) + 's');
+      p.style.setProperty('--delay', (-Math.random() * 12) + 's');
+      p.style.setProperty('--drift', ((Math.random() - .5) * 160) + 'px');
+      particleLayer.appendChild(p);
+    }
+  }
+
+  // Project-card cursor tracking: makes the card glow follow the pointer.
+  if (!reduceMotion) {
+    document.querySelectorAll('.proj-card').forEach(card => {
+      card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        card.style.setProperty('--mx', x + '%');
+        card.style.setProperty('--my', y + '%');
+
+        const rx = ((e.clientY - r.top) / r.height - .5) * -3;
+        const ry = ((e.clientX - r.left) / r.width - .5) * 3;
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-5px)`;
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.transform = '';
+      });
+    });
+  }
+
+  // Animate skill pills with a gentle hover response.
+  if (!reduceMotion) {
+    document.querySelectorAll('.skill-pill').forEach(pill => {
+      pill.addEventListener('pointerenter', () => {
+        pill.animate(
+          [
+            { transform:'translateY(0) scale(1)' },
+            { transform:'translateY(-3px) scale(1.04)' },
+            { transform:'translateY(-1px) scale(1.01)' }
+          ],
+          { duration:260, easing:'cubic-bezier(.2,.8,.2,1)' }
+        );
+      });
+    });
+  }
+
+  // Animate the hero route continuously after the initial draw.
+  // The route now breathes instead of stopping abruptly.
+  if (!reduceMotion) {
+    let heroPulse = 0;
+    function animateHeroPulse(ts) {
+      heroPulse = ts * 0.001;
+      const pulse = 0.75 + Math.sin(heroPulse * 2.2) * 0.18;
+      canvas.style.opacity = pulse;
+      requestAnimationFrame(animateHeroPulse);
+    }
+    requestAnimationFrame(animateHeroPulse);
+  }
+
+  // Active navigation item based on the section currently visible.
+  const navAnchors = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+  const sections = navAnchors
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+
+  if (sections.length) {
+    const activeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navAnchors.forEach(a => a.classList.remove('active-nav'));
+        const active = navAnchors.find(a => a.getAttribute('href') === '#' + entry.target.id);
+        if (active) active.classList.add('active-nav');
+      });
+    }, { rootMargin:'-35% 0px -55% 0px', threshold:0 });
+    sections.forEach(section => activeObserver.observe(section));
+  }
+
+  // Subtle scroll velocity effect on the hero route.
+  if (!reduceMotion) {
+    let lastScroll = window.scrollY;
+    let velocity = 0;
+    window.addEventListener('scroll', () => {
+      const now = window.scrollY;
+      velocity = Math.min(Math.abs(now - lastScroll), 18);
+      lastScroll = now;
+      heroCanvasWrap.style.filter = `blur(${Math.min(velocity * .08, 1.2)}px)`;
+    }, { passive:true });
+  }
+
+</script>
+
+</body>
+</html>
