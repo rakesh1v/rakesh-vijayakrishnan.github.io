@@ -605,7 +605,7 @@ body::before {
         <div class="status-row"><span class="k">experience</span><span class="v">4+ years</span></div>
         <div class="status-row"><span class="k">core_systems</span><span class="v amber">AGV · ASRS · IoT Lockers</span></div>
         <div class="status-row"><span class="k">languages</span><span class="v">C, C++, Python, MicroPython</span></div>
-        <div class="status-row"><span class="k">location</span><span class="v">Coimbatore, IN</span></div>
+        <div class="status-row"><span class="k">location</span><span class="v">Bangalore, IN</span></div>
         <div class="status-row"><span class="k">status</span><span class="v teal">● open to opportunities</span></div>
       </div>
     </div>
@@ -633,10 +633,20 @@ body::before {
       <div class="proj-card reveal">
         <span class="corner tl"></span><span class="corner br"></span>
         <span class="proj-tag">Pick Automation</span>
-        <h3>Pick-to-Light &amp; SCARA Picking</h3>
-        <p>Smart display system for ASRS picking stations that lights up the correct rack and quantity per order — with a dedicated "XXXX" safety mode that stops mis-picks outright. The SCARA arm's pick motion is planned with RRT and RRT* on a URDF model of the arm and simulated end-to-end before any trajectory is ever sent to the physical machine.</p>
+        <h3>Pick-to-Light Display System</h3>
+        <p>Smart display system for ASRS picking stations that lights up the correct rack and quantity per order — with a dedicated "XXXX" safety mode that stops mis-picks outright, driven off the same order data the fleet and arm both consume.</p>
         <div class="proj-chips">
-          <span class="chip">Embedded C</span><span class="chip">MQTT Pub/Sub</span><span class="chip">SCARA Integration</span><span class="chip">RRT / RRT*</span><span class="chip">URDF Simulation</span><span class="chip">Safety Logic</span>
+          <span class="chip">Embedded C</span><span class="chip">MQTT Pub/Sub</span><span class="chip">Safety Logic</span>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">Motion Planning</span>
+        <h3>SCARA Arm — RRT/RRT* &amp; URDF Sim</h3>
+        <p>A SCARA arm driven by 36V QDD (quasi-direct-drive) motors over CAN bus, automating tray transfer from ASRS racks to the picking station. Pick trajectories are planned with RRT and RRT* against a URDF model of the arm and simulated end-to-end before any path is ever sent to the physical machine.</p>
+        <div class="proj-chips">
+          <span class="chip">QDD 36V · CAN Bus</span><span class="chip">RRT / RRT*</span><span class="chip">URDF Simulation</span><span class="chip">SCARA</span>
         </div>
       </div>
 
@@ -654,9 +664,9 @@ body::before {
         <span class="corner tl"></span><span class="corner br"></span>
         <span class="proj-tag">Motion Systems</span>
         <h3>AGV Drive &amp; Motor Control</h3>
-        <p>Full-ownership AGV hardware: 36V BLDC motors with planetary gear reduction for torque under load, IMU sensor fusion for stable heading, and the firmware to tie sensors, drivers, and comms together over I2C, UART, and SPI.</p>
+        <p>Full-ownership AGV hardware: 36V BLDC motors with planetary gear reduction for torque under load, driven by an RPM-based closed-loop control algorithm (encoder feedback + PID) rather than open-loop PWM, plus IMU sensor fusion for stable heading and firmware tying sensors, drivers, and comms together over I2C, UART, and SPI.</p>
         <div class="proj-chips">
-          <span class="chip">BLDC · PWM</span><span class="chip">IMU Fusion</span><span class="chip">I2C / UART / SPI</span>
+          <span class="chip">BLDC · Closed-Loop RPM</span><span class="chip">Encoder + PID</span><span class="chip">IMU Fusion</span><span class="chip">I2C / UART / SPI</span>
         </div>
       </div>
 
@@ -702,7 +712,7 @@ body::before {
       <div class="sub-card reveal">
         <div class="sub-head"><span class="sub-name">Motion &amp; Hardware</span><span class="sub-idx">SUB-02</span></div>
         <div class="tag-row">
-          <span class="skill-pill">BLDC Motor Control</span><span class="skill-pill">PWM</span><span class="skill-pill">Planetary Gearing</span>
+          <span class="skill-pill">BLDC Motor Control</span><span class="skill-pill">RPM Closed-Loop (PID)</span><span class="skill-pill">QDD Motors</span><span class="skill-pill">Planetary Gearing</span>
           <span class="skill-pill">IMU Fusion</span><span class="skill-pill">PCB Design</span><span class="skill-pill">Circuit Debugging</span>
         </div>
       </div>
@@ -710,7 +720,7 @@ body::before {
         <div class="sub-head"><span class="sub-name">Navigation &amp; Robotics</span><span class="sub-idx">SUB-03</span></div>
         <div class="tag-row">
           <span class="skill-pill">AGV Line Following</span><span class="skill-pill">RFID Localization</span><span class="skill-pill">Dijkstra</span>
-          <span class="skill-pill">Fleet Management</span><span class="skill-pill">SCARA Integration</span><span class="skill-pill">RRT / RRT*</span><span class="skill-pill">URDF Simulation</span>
+          <span class="skill-pill">Fleet Management</span><span class="skill-pill">SCARA · CAN Bus</span><span class="skill-pill">RRT / RRT*</span><span class="skill-pill">URDF Simulation</span>
         </div>
       </div>
       <div class="sub-card reveal">
@@ -737,8 +747,9 @@ body::before {
         <div class="stop-meta"><span class="stop-role">Embedded Software Engineer — Industrial Robotics</span><span class="stop-date">Aug 2023 – Present</span></div>
         <div class="stop-co">Leapmile Logistics Pvt Ltd · Bangalore</div>
         <ul class="stop-list">
-          <li>Own the embedded stack for an ASRS — AGV navigation, Pick-to-Light, SCARA picking, and fleet management.</li>
-          <li>Plan SCARA pick trajectories with RRT and RRT* against a URDF model of the arm, simulating every path before it's ever sent to the real machine.</li>
+          <li>Own the embedded stack for an ASRS — AGV navigation, Pick-to-Light, SCARA arm control, and fleet management.</li>
+          <li>Drive the SCARA arm with 36V QDD motors over CAN bus; plan pick trajectories with RRT/RRT* against a URDF model and simulate every path before it's sent to the real machine.</li>
+          <li>Run AGV drive motors on an RPM-based closed-loop control algorithm (encoder feedback + PID) instead of open-loop PWM.</li>
           <li>Built the Qikpod smart locker product end-to-end: hardware, firmware, and cloud backend.</li>
           <li>Shipped MQTT-based real-time infrastructure connecting AGVs, displays, and the fleet server.</li>
         </ul>
@@ -764,7 +775,7 @@ body::before {
       <div class="contact-links">
         <a href="mailto:rakeshvijayakrishnan98@gmail.com">✉ rakeshvijayakrishnan98@gmail.com</a>
         <a href="tel:+919597414683">☎ +91 95974 14683</a>
-        <a href="#about">📍 Coimbatore, Tamil Nadu</a>
+        <a href="#about">📍 Bangalore, Karnataka</a>
       </div>
       <div class="mqtt-line">topic: <span>contact/rakesh</span> · qos: 1 · retained: true</div>
     </div>
