@@ -572,7 +572,7 @@ body::before {
 <header class="hero">
   <div class="hero-canvas-wrap"><canvas id="armCanvas" width="900" height="560"></canvas></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">● system online — bangalore, in</div>
+    <div class="hero-eyebrow">● system online — Bangalore, in</div>
     <h1>Rakesh<br>Vijaya<span>krishnan</span></h1>
     <div class="hero-role">Full-Stack Embedded Engineer<span class="sep">·</span><span class="hl">AGV Navigation</span><span class="sep">·</span><span class="hl">ASRS Robotics</span><span class="sep">·</span><span class="hl">IoT</span></div>
     <p class="hero-desc">I build the firmware, motion control, and fleet logic that make warehouse robots find their way — from RFID-tagged coordinates and Dijkstra routing to the pick-to-light displays that keep humans in the loop.</p>
@@ -622,31 +622,51 @@ body::before {
     <div class="proj-grid">
       <div class="proj-card reveal">
         <span class="corner tl"></span><span class="corner br"></span>
-        <span class="proj-tag">Fleet Navigation</span>
-        <h3>AGV Fleet &amp; Pathfinding</h3>
-        <p>Line-following AGVs that retrieve trays across the warehouse, localized via RFID-tagged coordinates and routed with Dijkstra's shortest-path algorithm. A Python/Matplotlib tool plots every vehicle's live position on the warehouse map for the team to monitor.</p>
+        <span class="proj-tag">Fleet Layer</span>
+        <h3>Fleet Management &amp; Dijkstra Routing</h3>
+        <p>A shared fleet management API and Dijkstra-based routing layer used by both AGV platforms, with RFID-tagged coordinate localization and an MQTT pub/sub backbone connecting every AGV, pick-to-light display, and the fleet server. A Python/Matplotlib tool plots live fleet position for monitoring.</p>
         <div class="proj-chips">
-          <span class="chip">ESP32 · C++</span><span class="chip">RFID</span><span class="chip">Dijkstra</span><span class="chip">MQTT</span><span class="chip">Python / Matplotlib</span>
+          <span class="chip">RFID · Dijkstra</span><span class="chip">MQTT Pub/Sub</span><span class="chip">Python / Matplotlib</span>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">AGV · Unit A</span>
+        <h3>AGV — Pi 4B + Arduino R4 Navigation Unit</h3>
+        <p>Raspberry Pi 4B (Ubuntu Server 22.04 LTS) as the onboard brain — routing, position, alerts — with auto-login, static IP, and SSH for independent remote access across a shared router network. An Arduino Uno R4 WiFi (Renesas) drives a 12V planetary-gear motor (19:2 ratio, encoder feedback) via a Cytron MDD10A driver and Cytron Maker line sensor. ToF obstacle sensing, an OLED status display, an INA260 power monitor, and a NeoPixel ring round out the safety stack.</p>
+        <div class="proj-chips">
+          <span class="chip">Raspberry Pi 4B</span><span class="chip">Arduino R4 (Renesas)</span><span class="chip">Cytron MDD10A</span><span class="chip">ToF · OLED · INA260</span>
+        </div>
+      </div>
+
+      <div class="proj-card reveal">
+        <span class="corner tl"></span><span class="corner br"></span>
+        <span class="proj-tag">AGV · Unit B</span>
+        <h3>AGV — ESP32 Hoverboard-Motor Unit</h3>
+        <p>A leaner, higher-power AGV variant: ESP32 + MicroPython driving a 36V BLDC hoverboard motor (15-pole / 45-pulse) through a ZXH711 FOC controller, with onboard IMU, RFID, and a 6-point line sensor array. Closed-loop RPM-based PID control holds a constant wheel RPM regardless of payload or battery voltage, with precision distance-based stopping and manual/remote teleoperation over WebSocket telemetry via WebREPL.</p>
+        <div class="proj-chips">
+          <span class="chip">ESP32 · MicroPython</span><span class="chip">ZXH711 FOC</span><span class="chip">RPM Closed-Loop PID</span><span class="chip">WebREPL Teleop</span>
         </div>
       </div>
 
       <div class="proj-card reveal">
         <span class="corner tl"></span><span class="corner br"></span>
         <span class="proj-tag">Pick Automation</span>
-        <h3>Pick-to-Light Display System</h3>
-        <p>Smart display system for ASRS picking stations that lights up the correct rack and quantity per order — with a dedicated "XXXX" safety mode that stops mis-picks outright, driven off the same order data the fleet and arm both consume.</p>
+        <h3>Pick-to-Light — Custom PCB &amp; Safety Systems</h3>
+        <p>A custom 130×40mm pick-to-light PCB designed schematic-to-Gerber and sent out for fabrication and assembly — ESP32, four daisy-chained MAX7219 displays, HX711 load-cell sensing, a relay stage, an ultrasonic sensor, a buzzer, and an optocoupler-isolated 16V input with 12V→5V→3.3V conversion. Firmware in C++ over MQTT, secured with WireGuard. The same board also runs the picking-station bay door: a 24V curtain IR sensor cuts sliding-door power the instant a hand enters the opening, and a 64-point ToF array measures tray object height and count.</p>
         <div class="proj-chips">
-          <span class="chip">Embedded C</span><span class="chip">MQTT Pub/Sub</span><span class="chip">Safety Logic</span>
+          <span class="chip">Custom PCB (Gerber)</span><span class="chip">MAX7219 ×4 · HX711</span><span class="chip">WireGuard</span><span class="chip">Bay-Door Safety</span>
         </div>
       </div>
 
       <div class="proj-card reveal">
         <span class="corner tl"></span><span class="corner br"></span>
         <span class="proj-tag">Motion Planning</span>
-        <h3>SCARA Arm — RRT/RRT* &amp; URDF Sim</h3>
-        <p>A SCARA arm driven by 36V QDD (quasi-direct-drive) motors over CAN bus, automating tray transfer from ASRS racks to the picking station. Pick trajectories are planned with RRT and RRT* against a URDF model of the arm and simulated end-to-end before any path is ever sent to the physical machine.</p>
+        <h3>SCARA Arm — RRT + PyBullet Simulation</h3>
+        <p>Pick-and-place motion for a ceiling-mounted SCARA arm serving four trays of six points each, planned in Python with RRT and simulated — arm, tray layout, and frame-collision constraints — against a URDF model in PyBullet before any path reaches hardware. Validated paths run on an ESP32 with a CAN bus module driving three daisy-chained 36V QDD motors plus a gripper, streaming joint-angle (radian) targets over MQTT for pick, drop, and home-position moves.</p>
         <div class="proj-chips">
-          <span class="chip">QDD 36V · CAN Bus</span><span class="chip">RRT / RRT*</span><span class="chip">URDF Simulation</span><span class="chip">SCARA</span>
+          <span class="chip">RRT · PyBullet</span><span class="chip">URDF</span><span class="chip">CAN Bus · 3× QDD</span><span class="chip">MQTT Pub/Sub</span>
         </div>
       </div>
 
@@ -654,19 +674,9 @@ body::before {
         <span class="corner tl"></span><span class="corner br"></span>
         <span class="proj-tag">IoT Product</span>
         <h3>Qikpod Smart Pod Lockers</h3>
-        <p>End-to-end locker product — hardware, firmware, and cloud backend built from scratch. Shipped four distinct access modes (Standard, Ad-hoc, Dynamic, Static) to serve both parcel logistics and self-storage rental use cases.</p>
+        <p>End-to-end locker product across a two-board architecture — a Main Interface Board (MIB) hosting a LinkIt Smart 7688 (OpenWRT) processor with onboard RTC, and a Lock Control Board (LCB) driving 12 independent 12V electronic locks over Modbus. An MQTT-subscribed unlock trigger and REST API sync reservation state, door status, and pod ID — running over local BLE/Wi-Fi with no internet dependency. Shipped four access modes: Standard, Ad-hoc, Dynamic, and Static.</p>
         <div class="proj-chips">
-          <span class="chip">MicroPython</span><span class="chip">REST · Swagger</span><span class="chip">DigitalOcean</span><span class="chip">Nginx</span>
-        </div>
-      </div>
-
-      <div class="proj-card reveal">
-        <span class="corner tl"></span><span class="corner br"></span>
-        <span class="proj-tag">Motion Systems</span>
-        <h3>AGV Drive &amp; Motor Control</h3>
-        <p>Full-ownership AGV hardware: 36V BLDC motors with planetary gear reduction for torque under load, driven by an RPM-based closed-loop control algorithm (encoder feedback + PID) rather than open-loop PWM, plus IMU sensor fusion for stable heading and firmware tying sensors, drivers, and comms together over I2C, UART, and SPI.</p>
-        <div class="proj-chips">
-          <span class="chip">BLDC · Closed-Loop RPM</span><span class="chip">Encoder + PID</span><span class="chip">IMU Fusion</span><span class="chip">I2C / UART / SPI</span>
+          <span class="chip">LinkIt Smart 7688</span><span class="chip">Modbus</span><span class="chip">REST + MQTT</span><span class="chip">BLE / Wi-Fi Local</span>
         </div>
       </div>
 
@@ -674,7 +684,7 @@ body::before {
         <span class="corner tl"></span><span class="corner br"></span>
         <span class="proj-tag">Infrastructure</span>
         <h3>Fleet &amp; Locker Backend</h3>
-        <p>Production backend for locker and fleet management deployed on DigitalOcean — REST APIs documented in Swagger, an MQTT broker handling real-time device traffic, and Linux servers managed over SSH with static IP configuration.</p>
+        <p>Production backend for locker, pick-to-light, and fleet management deployed on DigitalOcean — REST APIs documented in Swagger, an MQTT broker handling real-time device traffic, WireGuard for secure access, and Linux servers managed over SSH with static IP configuration.</p>
         <div class="proj-chips">
           <span class="chip">Linux · SSH</span><span class="chip">MQTT Broker</span><span class="chip">Nginx</span><span class="chip">REST API</span>
         </div>
@@ -702,32 +712,46 @@ body::before {
 
     <div class="sub-grid">
       <div class="sub-card reveal">
-        <div class="sub-head"><span class="sub-name">Firmware &amp; Protocols</span><span class="sub-idx">SUB-01</span></div>
+        <div class="sub-head"><span class="sub-name">Boards &amp; MCUs</span><span class="sub-idx">SUB-01</span></div>
+        <div class="tag-row">
+          <span class="skill-pill">Raspberry Pi 3B/4B</span><span class="skill-pill">ESP32-WROOM-32E</span><span class="skill-pill">Arduino R4 (Renesas)</span>
+          <span class="skill-pill">LinkIt Smart 7688</span><span class="skill-pill">NodeMCU</span><span class="skill-pill">PIC16F877A</span>
+        </div>
+      </div>
+      <div class="sub-card reveal">
+        <div class="sub-head"><span class="sub-name">Firmware &amp; Protocols</span><span class="sub-idx">SUB-02</span></div>
         <div class="tag-row">
           <span class="skill-pill">C</span><span class="skill-pill">C++</span><span class="skill-pill">MicroPython</span>
           <span class="skill-pill">I2C</span><span class="skill-pill">SPI</span><span class="skill-pill">UART</span>
-          <span class="skill-pill">CAN Bus</span><span class="skill-pill">Modbus</span><span class="skill-pill">RTOS basics</span>
+          <span class="skill-pill">CAN Bus</span><span class="skill-pill">Modbus</span><span class="skill-pill">WireGuard</span><span class="skill-pill">WebREPL</span>
         </div>
       </div>
       <div class="sub-card reveal">
-        <div class="sub-head"><span class="sub-name">Motion &amp; Hardware</span><span class="sub-idx">SUB-02</span></div>
+        <div class="sub-head"><span class="sub-name">Motion &amp; Hardware</span><span class="sub-idx">SUB-03</span></div>
         <div class="tag-row">
-          <span class="skill-pill">BLDC Motor Control</span><span class="skill-pill">RPM Closed-Loop (PID)</span><span class="skill-pill">QDD Motors</span><span class="skill-pill">Planetary Gearing</span>
-          <span class="skill-pill">IMU Fusion</span><span class="skill-pill">PCB Design</span><span class="skill-pill">Circuit Debugging</span>
+          <span class="skill-pill">BLDC Motor Control</span><span class="skill-pill">Hoverboard BLDC · FOC (ZXH711)</span><span class="skill-pill">RPM Closed-Loop (PID)</span><span class="skill-pill">QDD Motors</span>
+          <span class="skill-pill">Planetary Gearing + Encoder</span><span class="skill-pill">PCB Design (Gerber)</span>
         </div>
       </div>
       <div class="sub-card reveal">
-        <div class="sub-head"><span class="sub-name">Navigation &amp; Robotics</span><span class="sub-idx">SUB-03</span></div>
+        <div class="sub-head"><span class="sub-name">Sensors &amp; Peripherals</span><span class="sub-idx">SUB-04</span></div>
+        <div class="tag-row">
+          <span class="skill-pill">ToF (incl. 64-Point Array)</span><span class="skill-pill">Ultrasonic</span><span class="skill-pill">HX711 Load Cell</span><span class="skill-pill">INA260 Power Monitor</span>
+          <span class="skill-pill">IMU</span><span class="skill-pill">RFID</span><span class="skill-pill">OLED</span><span class="skill-pill">MAX7219</span><span class="skill-pill">NeoPixel</span>
+        </div>
+      </div>
+      <div class="sub-card reveal">
+        <div class="sub-head"><span class="sub-name">Navigation &amp; Robotics</span><span class="sub-idx">SUB-05</span></div>
         <div class="tag-row">
           <span class="skill-pill">AGV Line Following</span><span class="skill-pill">RFID Localization</span><span class="skill-pill">Dijkstra</span>
-          <span class="skill-pill">Fleet Management</span><span class="skill-pill">SCARA · CAN Bus</span><span class="skill-pill">RRT / RRT*</span><span class="skill-pill">URDF Simulation</span>
+          <span class="skill-pill">Fleet Management</span><span class="skill-pill">SCARA · CAN Bus</span><span class="skill-pill">RRT / RRT*</span><span class="skill-pill">URDF · PyBullet</span>
         </div>
       </div>
       <div class="sub-card reveal">
-        <div class="sub-head"><span class="sub-name">Cloud &amp; IoT</span><span class="sub-idx">SUB-04</span></div>
+        <div class="sub-head"><span class="sub-name">Cloud &amp; IoT</span><span class="sub-idx">SUB-06</span></div>
         <div class="tag-row">
           <span class="skill-pill">MQTT Pub/Sub</span><span class="skill-pill">REST · Swagger</span><span class="skill-pill">DigitalOcean</span>
-          <span class="skill-pill">Nginx</span><span class="skill-pill">Linux / SSH</span><span class="skill-pill">Python · Matplotlib</span>
+          <span class="skill-pill">Nginx</span><span class="skill-pill">Linux / SSH</span><span class="skill-pill">Ubuntu Server</span><span class="skill-pill">OpenWRT</span><span class="skill-pill">Python · Matplotlib</span>
         </div>
       </div>
     </div>
@@ -747,10 +771,11 @@ body::before {
         <div class="stop-meta"><span class="stop-role">Embedded Software Engineer — Industrial Robotics</span><span class="stop-date">Aug 2023 – Present</span></div>
         <div class="stop-co">Leapmile Logistics Pvt Ltd · Bangalore</div>
         <ul class="stop-list">
-          <li>Own the embedded stack for an ASRS — AGV navigation, Pick-to-Light, SCARA arm control, and fleet management.</li>
-          <li>Drive the SCARA arm with 36V QDD motors over CAN bus; plan pick trajectories with RRT/RRT* against a URDF model and simulate every path before it's sent to the real machine.</li>
-          <li>Run AGV drive motors on an RPM-based closed-loop control algorithm (encoder feedback + PID) instead of open-loop PWM.</li>
-          <li>Built the Qikpod smart locker product end-to-end: hardware, firmware, and cloud backend.</li>
+          <li>Own the embedded stack for an ASRS — dual AGV platforms, Pick-to-Light, SCARA arm control, and fleet management.</li>
+          <li>Built two parallel AGV platforms: a Raspberry Pi 4B + Arduino R4 navigation unit and a leaner ESP32 + hoverboard-motor unit, both closed-loop RPM-controlled.</li>
+          <li>Designed a custom 130×40mm pick-to-light PCB from schematic to Gerber, plus its bay-door safety adaptation (24V curtain sensor, 64-point ToF).</li>
+          <li>Drive the SCARA arm with 36V QDD motors over CAN bus; plan pick trajectories with RRT against a PyBullet-simulated URDF model before they reach hardware.</li>
+          <li>Built the Qikpod smart locker product end-to-end — dual-board (MIB/LCB) hardware, firmware, and cloud backend.</li>
           <li>Shipped MQTT-based real-time infrastructure connecting AGVs, displays, and the fleet server.</li>
         </ul>
       </div>
